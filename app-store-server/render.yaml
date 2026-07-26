@@ -13,6 +13,12 @@ services:
       - path: /v1/*
         name: Cache-Control
         value: public, max-age=300
+      - path: /packages/*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /packages/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
     routes:
       - type: rewrite
         source: /health

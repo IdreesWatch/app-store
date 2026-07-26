@@ -12,7 +12,9 @@
       "runtime": "native-host",
       "entry": "host.peanutgb",
       "min_os_api": 1,
-      "size_bytes": 0,
+      "size_bytes": 247,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.peanutgb/1.0.0/package.json",
+      "sha256": "820f1aa2153d5841c7be1e547c7253198c6f7462d4682c524c628d7a86367efa",
       "availability": "available"
     },
     {
@@ -25,7 +27,9 @@
       "runtime": "native-host",
       "entry": "host.doom",
       "min_os_api": 1,
-      "size_bytes": 0,
+      "size_bytes": 232,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/1.0.0/package.json",
+      "sha256": "b2383b0316a2f9c423aca4787b5ba3c246e5f35da58386d0ef53b112a0d6ee64",
       "availability": "available"
     },
     {

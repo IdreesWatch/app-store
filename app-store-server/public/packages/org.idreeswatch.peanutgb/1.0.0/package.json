@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "org.idreeswatch.peanutgb",
+  "version": "1.0.0",
+  "runtime": "native-host",
+  "entry": "host.peanutgb",
+  "content": {
+    "source": "user-supplied",
+    "extensions": [".gb", ".gbc"],
+    "search_root": "/sdcard"
+  }
+}

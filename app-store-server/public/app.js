@@ -35,7 +35,22 @@ function createCard(packageInfo) {
 
   const meta = document.createElement("div");
   meta.className = "app-meta";
-  meta.textContent = `${packageInfo.runtime} · v${packageInfo.version}`;
+  const runtime = document.createElement("span");
+  runtime.textContent = `${packageInfo.runtime} · v${packageInfo.version}`;
+  meta.append(runtime);
+
+  if (!pending && packageInfo.package_url) {
+    const download = document.createElement("a");
+    download.className = "package-action";
+    download.href = packageInfo.package_url;
+    download.textContent = "Package";
+    download.setAttribute("download", "");
+    download.setAttribute(
+      "aria-label",
+      `Download ${packageInfo.name} package`,
+    );
+    meta.append(download);
+  }
 
   card.append(icon, title, availability, summary, meta);
   return card;

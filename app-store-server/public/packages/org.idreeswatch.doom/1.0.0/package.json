@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "org.idreeswatch.doom",
+  "version": "1.0.0",
+  "runtime": "native-host",
+  "entry": "host.doom",
+  "content": {
+    "source": "user-supplied",
+    "extensions": [".wad"],
+    "search_root": "/sdcard"
+  }
+}

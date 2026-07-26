@@ -123,6 +123,40 @@ The watch still carries a compiled fallback catalog for offline use. GitHub
 Pages is appropriate for catalog data and small signed modules; large binaries
 can later move behind a CDN without changing the manifest contract.
 
+## SD-card layout
+
+The OS owns one namespaced tree and leaves unrelated files alone:
+
+```text
+/sdcard/IdreesWatch/
+├── apps/<package-id>/           # Store-managed package and assets
+├── data/<package-id>/           # Config, saves, and cache
+├── library/
+│   ├── roms/gameboy/
+│   ├── roms/nes/
+│   ├── doom/wads/
+│   ├── tiny386/disks/
+│   ├── tiny386/bios/
+│   ├── music/
+│   ├── video/
+│   └── images/
+├── watchfaces/
+├── themes/
+└── system/
+    ├── catalog/
+    ├── updates/staging/
+    ├── updates/rollback/
+    ├── logs/
+    └── temp/
+```
+
+The installer streams to
+`apps/<package-id>/package.part`, verifies the exact size and SHA-256, and
+atomically promotes it to `package.iwpkg`. An update keeps the previous package
+as `package.bak` until promotion succeeds. Uninstall removes the managed package
+but persistent `data/<package-id>` is retained. Legacy root-level ROM and WAD
+locations remain readable during migration.
+
 ## OTA migration
 
 The current factory-only partition table cannot perform safe A/B OTA. Before

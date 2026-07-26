@@ -31,7 +31,34 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  const route = routes[request.url];
+  let pathname;
+  try {
+    pathname = decodeURIComponent(
+      new URL(request.url, "http://localhost").pathname,
+    );
+  } catch {
+    response.writeHead(400, { "content-type": "application/json" });
+    response.end(JSON.stringify({ error: "bad_request" }));
+    return;
+  }
+
+  let route = routes[pathname];
+  if (!route && pathname.startsWith("/packages/")) {
+    const candidate = path.resolve(publicRoot, `.${pathname}`);
+    const packageRoot = path.join(publicRoot, "packages") + path.sep;
+    if (
+      candidate.startsWith(packageRoot) &&
+      fs.existsSync(candidate) &&
+      fs.statSync(candidate).isFile()
+    ) {
+      route = [
+        path.relative(publicRoot, candidate),
+        candidate.endsWith(".json")
+          ? "application/json; charset=utf-8"
+          : "application/octet-stream",
+      ];
+    }
+  }
   if (!route) {
     response.writeHead(404, { "content-type": "application/json" });
     response.end(JSON.stringify({ error: "not_found" }));
@@ -42,7 +69,7 @@ const server = http.createServer((request, response) => {
   const body = fs.readFileSync(path.join(publicRoot, relativePath));
   response.writeHead(200, {
     "access-control-allow-origin": "*",
-    "cache-control": request.url.startsWith("/health")
+    "cache-control": pathname.startsWith("/health")
       ? "no-store"
       : "public, max-age=300",
     "content-type": contentType,

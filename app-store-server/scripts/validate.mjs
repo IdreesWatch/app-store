@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 
 const catalogUrl = new URL("../public/v1/catalog.json", import.meta.url);
 const catalog = JSON.parse(await readFile(catalogUrl, "utf8"));
-const allowedKinds = new Set(["app", "watchface", "theme"]);
-const allowedRuntimes = new Set(["native-host", "elf", "wasm"]);
+const allowedKinds = new Set(["app", "watchface", "theme", "firmware"]);
+const allowedRuntimes = new Set(["native-host", "elf", "wasm", "content"]);
 const allowedAvailability = new Set(["available", "runtime-pending"]);
 const packageIdPattern = /^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._-]{2,95}$/;
 const semverPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
@@ -86,6 +87,22 @@ for (const packageInfo of catalog.packages) {
     }
     if (!sha256Pattern.test(packageInfo.sha256 || "")) {
       throw new Error(`${packageInfo.id} must provide a valid sha256 with package_url`);
+    }
+    if (
+      packageUrl.hostname === "idreeswatch.github.io" &&
+      packageUrl.pathname.startsWith("/app-store/")
+    ) {
+      const relativePath = packageUrl.pathname.slice("/app-store/".length);
+      const payload = await readFile(
+        new URL(`../public/${relativePath}`, import.meta.url),
+      );
+      const digest = createHash("sha256").update(payload).digest("hex");
+      if (payload.length !== packageInfo.size_bytes) {
+        throw new Error(`${packageInfo.id} size_bytes does not match its payload`);
+      }
+      if (digest.toLowerCase() !== packageInfo.sha256.toLowerCase()) {
+        throw new Error(`${packageInfo.id} sha256 does not match its payload`);
+      }
     }
   } else if (packageInfo.sha256 !== undefined) {
     throw new Error(`${packageInfo.id} provides sha256 without package_url`);
