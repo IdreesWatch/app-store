@@ -1,0 +1,65 @@
+name: Build apps and deploy store
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-nes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and inspect NES module
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5.2
+          target: esp32s3
+          path: app-store-server/apps/org.idreeswatch.nes
+          command: >-
+            idf.py build &&
+            python ../../scripts/verify-elf-imports.py
+            build/idreeswatch_nes.so
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nes-module
+          path: app-store-server/apps/org.idreeswatch.nes/build/idreeswatch_nes.so
+          if-no-files-found: error
+
+  deploy:
+    needs: build-nes
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nes-module
+          path: artifacts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Stage built package and catalog
+        run: >-
+          node app-store-server/scripts/publish-built-app.mjs
+          app-store-server/apps/org.idreeswatch.nes/manifest.json
+          artifacts/idreeswatch_nes.so
+      - run: npm --prefix app-store-server run check
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app-store-server/public
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

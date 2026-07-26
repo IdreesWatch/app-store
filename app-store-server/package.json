@@ -5,7 +5,8 @@
   "description": "Static catalog API for the IdreesWatchOS package service",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node scripts/validate.mjs"
+    "check": "node --check server.js && node scripts/validate-source.mjs && node scripts/validate.mjs",
+    "check:source": "node scripts/validate-source.mjs"
   },
   "engines": {
     "node": ">=20"

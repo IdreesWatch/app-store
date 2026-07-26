@@ -4,6 +4,16 @@ One dependency-free static storefront and catalog for GitHub Pages, Render, or
 any ordinary web server. The watch consumes `public/v1/catalog.json`; the site
 renders the same file for people.
 
+Community applications are submitted as source pull requests. CI builds the
+ESP32-S3 module, checks its firmware imports and license metadata, hashes the
+artifact, and publishes it only after review. See
+[`CONTRIBUTING.md`](CONTRIBUTING.md) and the executable NES reference under
+[`app-store-server/apps/org.idreeswatch.nes`](app-store-server/apps/org.idreeswatch.nes).
+
+Catalog publication never installs or updates an app on a watch. Every install
+and update remains an explicit user action; unsigned local modules can also be
+sideloaded from SD after an on-watch trust warning.
+
 ```powershell
 cd app-store-server
 npm start

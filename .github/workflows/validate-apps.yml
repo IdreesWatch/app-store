@@ -1,0 +1,43 @@
+name: Validate app pull request
+
+on:
+  pull_request:
+    paths:
+      - "app-store-server/apps/**"
+      - "sdk/**"
+      - "app-store-server/scripts/**"
+      - "app-store-server/public/v1/catalog.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm --prefix app-store-server run check:source
+
+  nes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ESP32-S3 shared object
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5.2
+          target: esp32s3
+          path: app-store-server/apps/org.idreeswatch.nes
+          command: >-
+            idf.py build &&
+            python ../../scripts/verify-elf-imports.py
+            build/idreeswatch_nes.so
+      - uses: actions/upload-artifact@v4
+        with:
+          name: org.idreeswatch.nes
+          path: app-store-server/apps/org.idreeswatch.nes/build/idreeswatch_nes.so
+          if-no-files-found: error

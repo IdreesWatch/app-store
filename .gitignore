@@ -1,0 +1,5 @@
+app-store-server/apps/*/build/
+app-store-server/apps/*/managed_components/
+app-store-server/apps/*/dependencies.lock
+app-store-server/apps/*/sdkconfig
+app-store-server/apps/*/sdkconfig.old
