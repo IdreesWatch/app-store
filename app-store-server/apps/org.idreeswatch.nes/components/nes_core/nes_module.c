@@ -111,8 +111,8 @@ int printf(const char *format, ...)
     return result;
 }
 
-static int32_t nes_start(const idreeswatch_host_v1_t *host,
-                         const idreeswatch_launch_v1_t *launch)
+int32_t nes_start(const idreeswatch_host_v1_t *host,
+                  const idreeswatch_launch_v1_t *launch)
 {
     if (!host || host->struct_size < sizeof(*host) ||
         !host->allocate || !host->deallocate ||
@@ -160,8 +160,8 @@ static int32_t nes_start(const idreeswatch_host_v1_t *host,
     return 0;
 }
 
-static int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
-                             idreeswatch_frame_v1_t *frame)
+int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
+                      idreeswatch_frame_v1_t *frame)
 {
     if (!started || !console || !input || !frame || !frame->pixels ||
         frame->width != NES_OUTPUT_WIDTH ||
@@ -196,8 +196,7 @@ static int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
     return 0;
 }
 
-static int32_t nes_command(idreeswatch_module_command_t command,
-                           int32_t argument)
+int32_t nes_command(idreeswatch_module_command_t command, int32_t argument)
 {
     (void)argument;
     if (!started || !console) return -1;
@@ -208,7 +207,7 @@ static int32_t nes_command(idreeswatch_module_command_t command,
     return -2;
 }
 
-static void nes_stop(void)
+void nes_stop(void)
 {
     if (started) nes_shutdown();
     started = false;
@@ -220,18 +219,3 @@ static void nes_stop(void)
     module_log(IDREESWATCH_LOG_INFO, "Nofrendo NES module stopped");
     module_host = NULL;
 }
-
-IDREESWATCH_EXPORT_MODULE(
-    "org.idreeswatch.nes",
-    "NES",
-    IDREESWATCH_MODULE_CAP_VIDEO_RGB565 |
-        IDREESWATCH_MODULE_CAP_AUDIO_PCM16 |
-        IDREESWATCH_MODULE_CAP_GAMEPAD,
-    NES_OUTPUT_WIDTH,
-    NES_OUTPUT_HEIGHT,
-    NES_AUDIO_RATE,
-    nes_start,
-    nes_run_frame,
-    nes_command,
-    nes_stop
-);
