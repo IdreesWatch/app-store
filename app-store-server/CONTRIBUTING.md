@@ -13,7 +13,9 @@ apps/<reverse-domain-package-id>/
 
 Use `apps/org.idreeswatch.nes` as the executable reference. Applications build
 against `sdk/include/idreeswatch_module.h`; they do not include firmware
-headers, LVGL, FreeRTOS, or board drivers.
+headers, LVGL, FreeRTOS, or board drivers. Declare the exact shared-object
+filename in the manifest's `artifact` field; the generic CI matrix discovers,
+builds, verifies, and publishes every app directory without workflow edits.
 
 ## Review and publishing
 

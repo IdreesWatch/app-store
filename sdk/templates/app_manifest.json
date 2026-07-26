@@ -7,9 +7,7 @@
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",
+  "artifact": "my_app.so",
   "min_os_api": 1,
-  "size_bytes": 0,
-  "availability": "available",
-  "package_url": "https://example.com/packages/dev.example.myapp/app.elf",
-  "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  "license": "MIT"
 }

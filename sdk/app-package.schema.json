@@ -55,6 +55,19 @@
       "maxLength": 47,
       "pattern": "^[A-Za-z0-9._-]+$"
     },
+    "artifact": {
+      "type": "string",
+      "maxLength": 96,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.so$"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63
+    },
+    "content": {
+      "type": "object"
+    },
     "min_os_api": {
       "type": "integer",
       "minimum": 1,

@@ -15,29 +15,37 @@ permissions:
 jobs:
   source:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.apps.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
       - run: npm --prefix app-store-server run check:source
+      - id: apps
+        run: node app-store-server/scripts/list-apps.mjs >> "$GITHUB_OUTPUT"
 
-  nes:
+  build:
+    needs: source
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.source.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build ESP32-S3 shared object
+      - name: Build and inspect ${{ matrix.id }}
         uses: espressif/esp-idf-ci-action@v1
         with:
           esp_idf_version: v5.5.2
           target: esp32s3
-          path: app-store-server/apps/org.idreeswatch.nes
+          path: ${{ matrix.path }}
           command: >-
-            idf.py build &&
+            idf.py so &&
             python ../../scripts/verify-elf-imports.py
-            build/idreeswatch_nes.so
+            build/${{ matrix.artifact }}
       - uses: actions/upload-artifact@v4
         with:
-          name: org.idreeswatch.nes
-          path: app-store-server/apps/org.idreeswatch.nes/build/idreeswatch_nes.so
+          name: app-${{ matrix.id }}
+          path: ${{ matrix.path }}/build/${{ matrix.artifact }}
           if-no-files-found: error

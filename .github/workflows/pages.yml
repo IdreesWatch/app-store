@@ -15,28 +15,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-nes:
+  source:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.apps.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build and inspect NES module
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm --prefix app-store-server run check:source
+      - id: apps
+        run: node app-store-server/scripts/list-apps.mjs >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: source
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.source.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and inspect ${{ matrix.id }}
         uses: espressif/esp-idf-ci-action@v1
         with:
           esp_idf_version: v5.5.2
           target: esp32s3
-          path: app-store-server/apps/org.idreeswatch.nes
+          path: ${{ matrix.path }}
           command: >-
             idf.py so &&
             python ../../scripts/verify-elf-imports.py
-            build/idreeswatch_nes.so
+            build/${{ matrix.artifact }}
       - uses: actions/upload-artifact@v4
         with:
-          name: nes-module
-          path: app-store-server/apps/org.idreeswatch.nes/build/idreeswatch_nes.so
+          name: app-${{ matrix.id }}
+          path: ${{ matrix.path }}/build/${{ matrix.artifact }}
           if-no-files-found: error
 
   deploy:
-    needs: build-nes
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -45,16 +62,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: nes-module
+          pattern: app-*
+          merge-multiple: true
           path: artifacts
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Stage built package and catalog
-        run: >-
-          node app-store-server/scripts/publish-built-app.mjs
-          app-store-server/apps/org.idreeswatch.nes/manifest.json
-          artifacts/idreeswatch_nes.so
+        run: node app-store-server/scripts/publish-all-apps.mjs artifacts
       - run: npm --prefix app-store-server run check
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

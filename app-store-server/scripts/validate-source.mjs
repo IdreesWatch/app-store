@@ -18,6 +18,7 @@ const forbiddenContent = new Set([
 const idPattern = /^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._-]{2,62}$/;
 const semverPattern =
   /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+const artifactPattern = /^[A-Za-z0-9][A-Za-z0-9._-]*\.so$/;
 
 async function walk(directory) {
   const files = [];
@@ -30,6 +31,7 @@ async function walk(directory) {
 }
 
 const appDirectories = await readdir(appsRoot, { withFileTypes: true });
+const artifacts = new Set();
 let count = 0;
 for (const directory of appDirectories) {
   if (!directory.isDirectory()) continue;
@@ -49,6 +51,16 @@ for (const directory of appDirectories) {
   ) {
     throw new Error(`${manifest.id}: unsupported reference-app contract`);
   }
+  if (
+    typeof manifest.artifact !== "string" ||
+    !artifactPattern.test(manifest.artifact) ||
+    artifacts.has(manifest.artifact)
+  ) {
+    throw new Error(
+      `${manifest.id}: artifact must be a unique, safe .so filename`,
+    );
+  }
+  artifacts.add(manifest.artifact);
   if (
     !manifest.license ||
     typeof manifest.license !== "string" ||

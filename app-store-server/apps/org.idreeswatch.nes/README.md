@@ -15,7 +15,7 @@ Build with ESP-IDF 5.5:
 
 ```sh
 idf.py set-target esp32s3
-idf.py build
+idf.py so
 ```
 
 The `idreeswatch_nes.so` output is packaged and hashed by repository CI. No
