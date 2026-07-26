@@ -27,7 +27,7 @@ def main() -> int:
         print("usage: verify-elf-imports.py <module.so>", file=sys.stderr)
         return 2
     result = subprocess.run(
-        ["xtensa-esp32s3-elf-nm", "-u", sys.argv[1]],
+        ["xtensa-esp32s3-elf-nm", "-D", "-u", sys.argv[1]],
         check=True,
         capture_output=True,
         text=True,
@@ -45,7 +45,13 @@ def main() -> int:
         return 1
 
     exports = subprocess.run(
-        ["xtensa-esp32s3-elf-nm", "-g", "--defined-only", sys.argv[1]],
+        [
+            "xtensa-esp32s3-elf-nm",
+            "-D",
+            "-g",
+            "--defined-only",
+            sys.argv[1],
+        ],
         check=True,
         capture_output=True,
         text=True,
