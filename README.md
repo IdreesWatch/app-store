@@ -42,8 +42,10 @@ with:
 
 Set the resulting HTTPS catalog URL through the firmware's
 `IDREESWATCH_STORE_CATALOG_URL` option. Keep `catalog.json` in source control;
-publishing a package becomes a reviewed catalog change.
+publishing a package becomes a reviewed source pull request. The generic CI
+matrix discovers every app directory, builds and verifies its declared
+artifact, and publishes the exact size and SHA-256 digest.
 
-GitHub Pages is ideal for the catalog and small signed app modules. Large
+GitHub Pages is ideal for the catalog and small reviewed app modules. Large
 artifacts should eventually move to object storage/CDN; copyrighted ROMs,
 BIOS files, and WADs are never hosted.

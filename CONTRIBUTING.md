@@ -13,7 +13,9 @@ apps/<reverse-domain-package-id>/
 
 Use `apps/org.idreeswatch.nes` as the executable reference. Applications build
 against `sdk/include/idreeswatch_module.h`; they do not include firmware
-headers, LVGL, FreeRTOS, or board drivers.
+headers, LVGL, FreeRTOS, or board drivers. Declare the exact shared-object
+filename in the manifest's `artifact` field; CI discovers and builds it
+without app-specific workflow changes.
 
 ## Review and publishing
 
@@ -35,7 +37,8 @@ Open-source software does not require catalog approval. A developer may copy a
 built module and its manifest to:
 
 ```text
-/sdcard/IdreesWatch/system/import/
+/sdcard/IdreesWatch/system/import/manifest.json
+/sdcard/IdreesWatch/system/import/package.iwpkg
 ```
 
 The watch shows: **“Do you trust this package from an unsigned source?”**
