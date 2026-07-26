@@ -111,6 +111,33 @@ int printf(const char *format, ...)
     return result;
 }
 
+/*
+ * The reference ABI deliberately exposes no arbitrary filesystem access.
+ * Nofrendo's optional FDS/save-state paths therefore fail closed; cartridge
+ * content itself arrives through the host-owned launch buffer.
+ */
+FILE *fopen(const char *path, const char *mode)
+{
+    (void)path;
+    (void)mode;
+    return NULL;
+}
+
+size_t fread(void *buffer, size_t size, size_t count, FILE *stream)
+{
+    (void)buffer;
+    (void)size;
+    (void)count;
+    (void)stream;
+    return 0;
+}
+
+int fclose(FILE *stream)
+{
+    (void)stream;
+    return EOF;
+}
+
 int32_t nes_start(const idreeswatch_host_v1_t *host,
                   const idreeswatch_launch_v1_t *launch)
 {
