@@ -24,6 +24,7 @@ extern "C" {
 #define IDREESWATCH_MODULE_CAP_VIDEO_RGB565 (1U << 0)
 #define IDREESWATCH_MODULE_CAP_AUDIO_PCM16   (1U << 1)
 #define IDREESWATCH_MODULE_CAP_GAMEPAD       (1U << 2)
+#define IDREESWATCH_MODULE_CAP_CONTENT_REQUIRED (1U << 3)
 
 typedef enum {
     IDREESWATCH_LOG_ERROR = 0,
@@ -109,6 +110,9 @@ typedef struct {
                          idreeswatch_frame_v1_t *frame);
     int32_t (*command)(idreeswatch_module_command_t command, int32_t argument);
     void (*stop)(void);
+    /* Optional append-only v1 content declaration. Paths are SD-relative. */
+    const char *content_extension;
+    const char *content_directory;
 } idreeswatch_module_v1_t;
 
 #define IDREESWATCH_EXPORT_MODULE(package_id, display_name, caps, width, \
@@ -128,6 +132,29 @@ typedef struct {
         .run_frame = frame_fn, \
         .command = command_fn, \
         .stop = stop_fn, \
+        .content_extension = NULL, \
+        .content_directory = NULL, \
+    }
+
+#define IDREESWATCH_EXPORT_MODULE_WITH_CONTENT( \
+        package_id, display_name, caps, width, height, sample_rate, \
+        extension, directory, start_fn, frame_fn, command_fn, stop_fn) \
+    __attribute__((used, visibility("default"))) \
+    const idreeswatch_module_v1_t IDREESWATCH_MODULE_SYMBOL = { \
+        .struct_size = sizeof(idreeswatch_module_v1_t), \
+        .abi_version = IDREESWATCH_MODULE_ABI_V1, \
+        .id = package_id, \
+        .name = display_name, \
+        .capabilities = (caps) | IDREESWATCH_MODULE_CAP_CONTENT_REQUIRED, \
+        .video_width = width, \
+        .video_height = height, \
+        .audio_sample_rate = sample_rate, \
+        .start = start_fn, \
+        .run_frame = frame_fn, \
+        .command = command_fn, \
+        .stop = stop_fn, \
+        .content_extension = extension, \
+        .content_directory = directory, \
     }
 
 #ifdef __cplusplus

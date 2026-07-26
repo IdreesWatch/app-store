@@ -19,7 +19,7 @@ int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
 int32_t nes_command(idreeswatch_module_command_t command, int32_t argument);
 void nes_stop(void);
 
-IDREESWATCH_EXPORT_MODULE(
+IDREESWATCH_EXPORT_MODULE_WITH_CONTENT(
     "org.idreeswatch.nes",
     "NES",
     IDREESWATCH_MODULE_CAP_VIDEO_RGB565 |
@@ -28,6 +28,8 @@ IDREESWATCH_EXPORT_MODULE(
     NES_OUTPUT_WIDTH,
     NES_OUTPUT_HEIGHT,
     NES_AUDIO_RATE,
+    ".nes",
+    "IdreesWatch/library/roms/nes",
     nes_start,
     nes_run_frame,
     nes_command,
