@@ -122,12 +122,23 @@ static int32_t nes_start(const idreeswatch_host_v1_t *host,
     }
     module_host = host;
     console = nes_init(SYS_DETECT, NES_AUDIO_RATE, false, NULL);
-    if (!console) return -2;
+    if (!console) {
+        module_host = NULL;
+        return -2;
+    }
 
     rom_t *rom = rom_loadmem((uint8_t *)launch->content_data,
                              launch->content_size);
-    if (!rom || nes_insertcart(rom) != 0) {
+    if (!rom) {
+        nes_shutdown();
         console = NULL;
+        module_host = NULL;
+        return -3;
+    }
+    if (nes_insertcart(rom) != 0) {
+        /* nes_insertcart() owns failure cleanup through nes_shutdown(). */
+        console = NULL;
+        module_host = NULL;
         return -3;
     }
 
@@ -141,6 +152,7 @@ static int32_t nes_start(const idreeswatch_host_v1_t *host,
         free(palette);
         indexed_frame = NULL;
         palette = NULL;
+        module_host = NULL;
         return -4;
     }
     started = true;
