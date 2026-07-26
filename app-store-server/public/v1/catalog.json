@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "generated_at": "2026-07-26T00:00:00Z",
+  "packages": [
+    {
+      "id": "org.idreeswatch.peanutgb",
+      "name": "Game Boy",
+      "version": "1.0.0",
+      "author": "IdreesWatch",
+      "summary": "Peanut-GB emulator for GB and GBC ROMs on SD card.",
+      "kind": "app",
+      "runtime": "native-host",
+      "entry": "host.peanutgb",
+      "min_os_api": 1,
+      "size_bytes": 0,
+      "availability": "available"
+    },
+    {
+      "id": "org.idreeswatch.doom",
+      "name": "DOOM",
+      "version": "1.0.0",
+      "author": "IdreesWatch",
+      "summary": "DOOM runtime. Supply your own legally obtained WAD on SD.",
+      "kind": "app",
+      "runtime": "native-host",
+      "entry": "host.doom",
+      "min_os_api": 1,
+      "size_bytes": 0,
+      "availability": "available"
+    },
+    {
+      "id": "org.idreeswatch.tiny386",
+      "name": "tiny386",
+      "version": "0.1.0",
+      "author": "IdreesWatch",
+      "summary": "Experimental 386-class PC emulator runtime.",
+      "kind": "app",
+      "runtime": "native-host",
+      "entry": "host.tiny386",
+      "min_os_api": 1,
+      "size_bytes": 0,
+      "availability": "runtime-pending"
+    },
+    {
+      "id": "org.idreeswatch.nes",
+      "name": "NES",
+      "version": "0.1.0",
+      "author": "IdreesWatch",
+      "summary": "Nintendo Entertainment System emulator runtime.",
+      "kind": "app",
+      "runtime": "native-host",
+      "entry": "host.nes",
+      "min_os_api": 1,
+      "size_bytes": 0,
+      "availability": "runtime-pending"
+    }
+  ]
+}

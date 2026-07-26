@@ -1,0 +1,44 @@
+name: Deploy App Store to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app-store-server/public/**"
+      - "app-store-server/scripts/validate.mjs"
+      - ".github/workflows/deploy-app-store.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Validate catalog
+        run: node app-store-server/scripts/validate.mjs
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static storefront
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: app-store-server/public
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

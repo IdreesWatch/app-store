@@ -1,0 +1,15 @@
+{
+  "id": "dev.example.myapp",
+  "name": "My App",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "summary": "A concise description that fits on the watch store card.",
+  "kind": "app",
+  "runtime": "elf",
+  "entry": "idreeswatch_module",
+  "min_os_api": 1,
+  "size_bytes": 0,
+  "availability": "available",
+  "package_url": "https://example.com/packages/dev.example.myapp/app.elf",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

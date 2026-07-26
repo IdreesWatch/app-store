@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: idreeswatch-app-store
+    runtime: static
+    rootDir: app-store-server
+    buildCommand: node scripts/validate.mjs
+    staticPublishPath: ./public
+    autoDeployTrigger: commit
+    headers:
+      - path: /v1/*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: /v1/*
+        name: Cache-Control
+        value: public, max-age=300
+    routes:
+      - type: rewrite
+        source: /health
+        destination: /health.json

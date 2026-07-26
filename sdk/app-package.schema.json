@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://idreeswatch.dev/schemas/package-v1.json",
+  "title": "IdreesWatchOS Package v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "author",
+    "summary",
+    "kind",
+    "runtime",
+    "entry",
+    "min_os_api"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "pattern": "^(?!.*\\.\\.)[A-Za-z0-9][A-Za-z0-9._-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 39
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 19,
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 39
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 111
+    },
+    "kind": {
+      "enum": ["app", "watchface", "theme", "firmware"]
+    },
+    "runtime": {
+      "enum": ["native-host", "elf", "wasm", "content"]
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 47,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "min_os_api": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1073741824
+    },
+    "package_url": {
+      "type": "string",
+      "maxLength": 255,
+      "format": "uri"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "availability": {
+      "enum": ["available", "runtime-pending"]
+    }
+  },
+  "dependentRequired": {
+    "package_url": ["sha256"],
+    "sha256": ["package_url"]
+  }
+}
