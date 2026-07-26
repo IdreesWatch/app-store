@@ -35,7 +35,8 @@ Open-source software does not require catalog approval. A developer may copy a
 built module and its manifest to:
 
 ```text
-/sdcard/IdreesWatch/system/import/
+/sdcard/IdreesWatch/system/import/manifest.json
+/sdcard/IdreesWatch/system/import/package.iwpkg
 ```
 
 The watch shows: **“Do you trust this package from an unsigned source?”**

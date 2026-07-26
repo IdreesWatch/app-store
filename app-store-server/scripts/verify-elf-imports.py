@@ -43,7 +43,20 @@ def main() -> int:
         for symbol in rejected:
             print(f"  {symbol}", file=sys.stderr)
         return 1
-    print(f"Verified {len(imports)} allowed ELF imports")
+
+    exports = subprocess.run(
+        ["xtensa-esp32s3-elf-nm", "-g", "--defined-only", sys.argv[1]],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    if not re.search(r"\bidreeswatch_module$", exports.stdout, re.MULTILINE):
+        print("Missing required exported descriptor: idreeswatch_module", file=sys.stderr)
+        return 1
+
+    print(
+        f"Verified module descriptor and {len(imports)} allowed ELF imports"
+    )
     return 0
 
 

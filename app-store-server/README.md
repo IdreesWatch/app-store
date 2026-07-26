@@ -32,8 +32,13 @@ with:
 
 Set the resulting HTTPS catalog URL through the firmware's
 `IDREESWATCH_STORE_CATALOG_URL` option. Keep `catalog.json` in source control;
-publishing a package becomes a reviewed catalog change.
+publishing a package becomes a reviewed source pull request and catalog
+change. CI builds portable applications, verifies their import boundary, and
+publishes the exact size and SHA-256 digest.
 
-GitHub Pages is ideal for the catalog and small signed app modules. Large
+GitHub Pages is ideal for the catalog and small reviewed app modules. Large
 artifacts should eventually move to object storage/CDN; copyrighted ROMs,
 BIOS files, and WADs are never hosted.
+
+The catalog is opt-in: a merge never installs or updates an app on anyone's
+watch. See `CONTRIBUTING.md` for the PR flow and unsigned SD sideload path.
