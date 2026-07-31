@@ -48,15 +48,18 @@
     {
       "id": "org.idreeswatch.nes",
       "name": "NES",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": "IdreesWatch",
-      "summary": "Nintendo Entertainment System emulator runtime.",
+      "summary": "Downloadable NES emulator with touch controls and PCM audio.",
       "kind": "app",
-      "runtime": "native-host",
-      "entry": "host.nes",
+      "runtime": "elf",
+      "entry": "idreeswatch_module",
+      "icon": "gamepad",
       "min_os_api": 1,
-      "size_bytes": 0,
-      "availability": "runtime-pending"
+      "size_bytes": 127484,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.nes/1.0.0/package.iwpkg",
+      "sha256": "7e69eaef3596cb439a27d2af74d6c726af17cf2a3ce6763ed9293ab67e114306",
+      "availability": "available"
     }
   ]
 }
