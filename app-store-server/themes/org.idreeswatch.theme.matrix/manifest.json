@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.theme.matrix",
+  "name": "Matrix Terminal",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "OLED-black terminal surfaces with phosphor green hierarchy and restrained signal accents.",
+  "kind": "theme",
+  "runtime": "content",
+  "entry": "theme.palette.v1",
+  "icon": "settings",
+  "artifact": "theme.json",
+  "min_os_api": 1,
+  "license": "CC0-1.0"
+}

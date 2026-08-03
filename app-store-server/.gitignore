@@ -1,0 +1,5 @@
+apps/*/build/
+apps/*/managed_components/
+apps/*/dependencies.lock
+apps/*/sdkconfig
+apps/*/sdkconfig.old

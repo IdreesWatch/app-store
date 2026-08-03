@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.prism",
+  "name": "Solar Pop",
+  "version": "2.0.0",
+  "author": "IdreesWatch",
+  "summary": "Saturated color discs, crisp filled symbols, and graphic shadows built for AMOLED.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "MIT",
+  "min_os_api": 1
+}

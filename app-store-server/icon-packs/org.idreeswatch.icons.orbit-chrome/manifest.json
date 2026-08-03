@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.orbit-chrome",
+  "name": "Orbit Chrome",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "Floating chrome glyphs with spectral orbital rings and tiny roaming planets.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "MIT",
+  "min_os_api": 1
+}

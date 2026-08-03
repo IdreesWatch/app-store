@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.python.hello",
+  "name": "Python Hello",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "Reference MicroPython app with native text, progress, and buttons.",
+  "kind": "app",
+  "runtime": "micropython",
+  "entry": "micropython.v1",
+  "artifact": "main.py",
+  "icon": "assistant",
+  "license": "MIT",
+  "min_os_api": 1
+}

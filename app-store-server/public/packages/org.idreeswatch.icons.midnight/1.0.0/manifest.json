@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.midnight",
+  "name": "Midnight Mono",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "Crisp outline icons in a restrained cool-white AMOLED palette.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.a8.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "MIT",
+  "min_os_api": 1
+}

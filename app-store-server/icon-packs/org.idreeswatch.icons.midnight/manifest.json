@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.midnight",
+  "name": "Aurora Glass",
+  "version": "2.0.0",
+  "author": "IdreesWatch",
+  "summary": "Luminous glass tiles with spectral depth, soft bloom, and polished filled glyphs.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "MIT",
+  "min_os_api": 1
+}

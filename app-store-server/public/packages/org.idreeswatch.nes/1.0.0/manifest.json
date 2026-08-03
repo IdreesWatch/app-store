@@ -1,7 +1,7 @@
 {
   "id": "org.idreeswatch.nes",
   "name": "NES",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "author": "IdreesWatch",
   "summary": "Downloadable NES emulator with touch controls and PCM audio.",
   "kind": "app",

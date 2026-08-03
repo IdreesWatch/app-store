@@ -1,0 +1,22 @@
+{
+  "format": "theme.palette.v1",
+  "palette": {
+    "primary": "#00E65C",
+    "primary_light": "#A6FFC2",
+    "primary_dark": "#007A31",
+    "secondary": "#5CFF8F",
+    "secondary_light": "#C9FFD9",
+    "secondary_dark": "#0B8F43",
+    "accent": "#D8FFE4",
+    "accent_light": "#F1FFF5",
+    "accent_dark": "#45A866",
+    "background": "#000000",
+    "card": "#031108",
+    "elevated": "#082416",
+    "glass": "#061A0F",
+    "text": "#D9FFE5",
+    "text_secondary": "#65D98A",
+    "text_hint": "#2F7548",
+    "launcher_bg": "#000000"
+  }
+}

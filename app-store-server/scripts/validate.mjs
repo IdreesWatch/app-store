@@ -3,12 +3,13 @@ import { createHash } from "node:crypto";
 
 const catalogUrl = new URL("../public/v1/catalog.json", import.meta.url);
 const catalog = JSON.parse(await readFile(catalogUrl, "utf8"));
-const allowedKinds = new Set(["app", "watchface", "theme", "firmware"]);
-const allowedRuntimes = new Set(["native-host", "elf", "wasm", "content"]);
+const allowedKinds = new Set(["app", "watchface", "theme", "wallpaper", "icon-pack", "firmware"]);
+const allowedRuntimes = new Set(["native-host", "elf", "wasm", "content", "micropython", "ota"]);
 const allowedAvailability = new Set(["available", "runtime-pending"]);
-const packageIdPattern = /^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._-]{2,95}$/;
+const packageIdPattern = /^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._-]{2,62}$/;
 const semverPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const sha256Pattern = /^[0-9a-f]{64}$/i;
+const iconPattern = /^[a-z0-9][a-z0-9-]{0,30}$/;
 const required = [
   "id",
   "name",
@@ -24,11 +25,15 @@ const required = [
 if (catalog.schema !== 1 || !Array.isArray(catalog.packages)) {
   throw new Error("Expected a schema-v1 package catalog");
 }
+if (catalog.packages.length > 32) {
+  throw new Error("A catalog cannot exceed the watch's 32-package limit");
+}
 
 function requireString(packageInfo, key, maximumLength) {
   const value = packageInfo[key];
-  if (typeof value !== "string" || value.length === 0 || value.length > maximumLength) {
-    throw new Error(`${packageInfo.id || "package"}.${key} must be 1-${maximumLength} characters`);
+  if (typeof value !== "string" || value.length === 0 ||
+      Buffer.byteLength(value, "utf8") > maximumLength) {
+    throw new Error(`${packageInfo.id || "package"}.${key} must be 1-${maximumLength} UTF-8 bytes`);
   }
 }
 
@@ -42,12 +47,19 @@ for (const packageInfo of catalog.packages) {
       throw new Error(`${packageInfo.id || "package"} is missing ${key}`);
     }
   }
-  requireString(packageInfo, "id", 96);
-  requireString(packageInfo, "name", 64);
-  requireString(packageInfo, "version", 32);
-  requireString(packageInfo, "author", 64);
-  requireString(packageInfo, "summary", 160);
-  requireString(packageInfo, "entry", 96);
+  requireString(packageInfo, "id", 63);
+  requireString(packageInfo, "name", 39);
+  requireString(packageInfo, "version", 19);
+  requireString(packageInfo, "author", 39);
+  requireString(packageInfo, "summary", 111);
+  requireString(packageInfo, "entry", 47);
+  if (
+    packageInfo.icon !== undefined &&
+    (typeof packageInfo.icon !== "string" ||
+     !iconPattern.test(packageInfo.icon))
+  ) {
+    throw new Error(`${packageInfo.id}.icon must be a stable icon id`);
+  }
   if (!packageIdPattern.test(packageInfo.id)) {
     throw new Error(`Invalid package id: ${packageInfo.id}`);
   }
@@ -60,22 +72,47 @@ for (const packageInfo of catalog.packages) {
   if (!allowedRuntimes.has(packageInfo.runtime)) {
     throw new Error(`${packageInfo.id} has an unsupported runtime`);
   }
+  const supportedContract =
+    (packageInfo.kind === "app" && packageInfo.runtime === "elf" &&
+     packageInfo.entry === "idreeswatch_module") ||
+    (packageInfo.kind === "app" && packageInfo.runtime === "native-host" &&
+     packageInfo.entry.startsWith("host.")) ||
+    (packageInfo.kind === "theme" && packageInfo.runtime === "content" &&
+     packageInfo.entry === "theme.palette.v1") ||
+    (packageInfo.kind === "watchface" && packageInfo.runtime === "content" &&
+     packageInfo.entry === "watchface.simple.v1") ||
+    (packageInfo.kind === "wallpaper" && packageInfo.runtime === "content" &&
+     packageInfo.entry === "wallpaper.rgb565.v1") ||
+    (packageInfo.kind === "icon-pack" && packageInfo.runtime === "content" &&
+     packageInfo.entry === "icon-pack.v1") ||
+    (packageInfo.kind === "app" && packageInfo.runtime === "micropython" &&
+     packageInfo.entry === "micropython.v1") ||
+    (packageInfo.kind === "firmware" && packageInfo.runtime === "ota" &&
+     packageInfo.entry === "firmware.esp32s3.signed.v1");
+  if (!supportedContract) {
+    throw new Error(`${packageInfo.id} uses a contract unsupported by OS API 1`);
+  }
   if (
     packageInfo.availability !== undefined &&
     !allowedAvailability.has(packageInfo.availability)
   ) {
     throw new Error(`${packageInfo.id} has an unsupported availability`);
   }
-  if (!Number.isSafeInteger(packageInfo.min_os_api) || packageInfo.min_os_api < 1) {
-    throw new Error(`${packageInfo.id}.min_os_api must be a positive integer`);
+  if (!Number.isSafeInteger(packageInfo.min_os_api) ||
+      packageInfo.min_os_api < 1 || packageInfo.min_os_api > 65535) {
+    throw new Error(`${packageInfo.id}.min_os_api must be an integer from 1 through 65535`);
   }
   if (
     packageInfo.size_bytes !== undefined &&
-    (!Number.isSafeInteger(packageInfo.size_bytes) || packageInfo.size_bytes < 0)
+    (!Number.isSafeInteger(packageInfo.size_bytes) || packageInfo.size_bytes < 0 ||
+     packageInfo.size_bytes > 32 * 1024 * 1024)
   ) {
     throw new Error(`${packageInfo.id}.size_bytes must be a non-negative integer`);
   }
   if (packageInfo.package_url !== undefined) {
+    if (Buffer.byteLength(packageInfo.package_url, "utf8") > 255) {
+      throw new Error(`${packageInfo.id}.package_url exceeds the firmware limit`);
+    }
     let packageUrl;
     try {
       packageUrl = new URL(packageInfo.package_url);
@@ -97,6 +134,9 @@ for (const packageInfo of catalog.packages) {
         new URL(`../public/${relativePath}`, import.meta.url),
       );
       const digest = createHash("sha256").update(payload).digest("hex");
+      if (packageInfo.runtime === "content" && payload.length > 768 * 1024) {
+        throw new Error(`${packageInfo.id} content payload exceeds 768 KiB`);
+      }
       if (payload.length !== packageInfo.size_bytes) {
         throw new Error(`${packageInfo.id} size_bytes does not match its payload`);
       }

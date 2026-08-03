@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "check": "node --check server.js && node scripts/validate-source.mjs && node scripts/validate.mjs",
-    "check:source": "node scripts/validate-source.mjs"
+    "check:source": "node scripts/validate-source.mjs",
+    "publish:package": "node scripts/publish-built-app.mjs"
   },
   "engines": {
     "node": ">=20"

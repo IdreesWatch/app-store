@@ -21,6 +21,23 @@ ALLOWED_IMPORTS = {
     "vsnprintf",
 }
 
+# Keep this list identical to the public symbols exported by the firmware's
+# ELF loader. A package that passes CI must not fail later at dlopen().
+RUNTIME_EXPORTS = {
+    "abort",
+    "memcmp",
+    "memcpy",
+    "memmove",
+    "memset",
+    "strlen",
+    "strcmp",
+    "strncmp",
+    "strncpy",
+    "strnlen",
+    "strstr",
+    "vsnprintf",
+}
+
 
 def main() -> int:
     if len(sys.argv) != 2:
@@ -41,6 +58,12 @@ def main() -> int:
     if rejected:
         print("Rejected ELF imports:", file=sys.stderr)
         for symbol in rejected:
+            print(f"  {symbol}", file=sys.stderr)
+        return 1
+    unavailable = sorted(imports - RUNTIME_EXPORTS)
+    if unavailable:
+        print("Imports missing from firmware runtime:", file=sys.stderr)
+        for symbol in unavailable:
             print(f"  {symbol}", file=sys.stderr)
         return 1
 
