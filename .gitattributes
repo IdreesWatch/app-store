@@ -1,0 +1,2 @@
+app-store-server/public/packages/**/package.json text eol=lf
+app-store-server/public/packages/**/*.iwpkg binary
