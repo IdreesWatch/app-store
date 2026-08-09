@@ -19,7 +19,7 @@
 
 #define NES_OUTPUT_WIDTH 256U
 #define NES_OUTPUT_HEIGHT 224U
-#define NES_AUDIO_RATE 22050U
+#define NES_AUDIO_RATE 24000U
 
 typedef union {
     struct {
@@ -199,18 +199,23 @@ int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
 
     input_update(0, (int)(input->buttons & 0xffU));
     nes_setvidbuf(indexed_frame);
-    nes_emulate(true);
+    const bool draw_frame = frame->video_requested;
+    frame->video_ready = false;
+    nes_emulate(draw_frame);
 
-    for (uint16_t y = 0; y < NES_OUTPUT_HEIGHT; ++y) {
-        const uint8_t *source =
-            NES_SCREEN_GETPTR(indexed_frame, 0, y + 8);
-        uint16_t *destination =
-            frame->pixels + (size_t)y * frame->stride_pixels;
-        for (uint16_t x = 0; x < NES_OUTPUT_WIDTH; ++x) {
-            destination[x] = palette[source[x]];
+    if (draw_frame) {
+        for (uint16_t y = 0; y < NES_OUTPUT_HEIGHT; ++y) {
+            const uint8_t *source =
+                NES_SCREEN_GETPTR(indexed_frame, 0, y + 8);
+            uint16_t *destination =
+                frame->pixels + (size_t)y * frame->stride_pixels;
+            for (uint16_t x = 0; x < NES_OUTPUT_WIDTH; ++x) {
+                destination[x] = palette[source[x]];
+            }
         }
+        frame->video_ready = true;
     }
-    frame->video_ready = true;
+    frame->frame_duration_us = 1000000U / (uint32_t)console->refresh_rate;
 
     size_t audio_frames = (size_t)console->apu->samples_per_frame;
     if (frame->audio_samples && audio_frames <= frame->audio_capacity_frames) {

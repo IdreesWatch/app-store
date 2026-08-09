@@ -10,7 +10,7 @@
 
 #define NES_OUTPUT_WIDTH 256U
 #define NES_OUTPUT_HEIGHT 224U
-#define NES_AUDIO_RATE 22050U
+#define NES_AUDIO_RATE 24000U
 
 int32_t nes_start(const idreeswatch_host_v1_t *host,
                   const idreeswatch_launch_v1_t *launch);

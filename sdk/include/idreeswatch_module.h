@@ -88,6 +88,12 @@ typedef struct {
     int16_t *audio_samples;
     uint16_t audio_capacity_frames;
     uint16_t audio_frame_count;
+    /* ABI v1 append-only scheduling fields, available from OS API 2.
+     * The host sets video_requested before run_frame(). Modules must still
+     * advance emulation and audio when it is false, but may skip rendering.
+     * frame_duration_us is returned by the module for NTSC/PAL pacing. */
+    bool video_requested;
+    uint32_t frame_duration_us;
 } idreeswatch_frame_v1_t;
 
 /*
