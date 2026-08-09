@@ -1,9 +1,9 @@
 {
   "id": "org.idreeswatch.theme.matrix",
-  "name": "Matrix Terminal",
+  "name": "Matrix",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "OLED-black terminal surfaces with phosphor green hierarchy and restrained signal accents.",
+  "summary": "Black theme with green text and controls.",
   "kind": "theme",
   "runtime": "content",
   "entry": "theme.palette.v1",

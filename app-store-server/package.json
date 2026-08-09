@@ -2,7 +2,7 @@
   "name": "idreeswatch-app-store",
   "version": "1.0.0",
   "private": true,
-  "description": "Static catalog API for the IdreesWatchOS package service",
+  "description": "IdreesWatchOS package catalog",
   "scripts": {
     "start": "node server.js",
     "check": "node --check server.js && node scripts/validate-source.mjs && node scripts/validate.mjs",

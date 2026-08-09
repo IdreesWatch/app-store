@@ -81,7 +81,7 @@ async function loadCatalog() {
       fragment.append(createCard(packageInfo));
     }
     list.replaceChildren(fragment);
-    status.textContent = `${catalog.packages.length} apps`;
+    status.textContent = `${catalog.packages.length} packages`;
   } catch (error) {
     status.textContent = "Catalog unavailable";
     list.textContent = "";

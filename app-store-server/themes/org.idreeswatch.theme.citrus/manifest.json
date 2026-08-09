@@ -1,9 +1,9 @@
 {
   "id": "org.idreeswatch.theme.citrus",
-  "name": "AMOLED Citrus",
+  "name": "Citrus",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "Pure black surfaces with crisp lime and warm citrus accents.",
+  "summary": "Black theme with lime and orange accents.",
   "kind": "theme",
   "runtime": "content",
   "entry": "theme.palette.v1",

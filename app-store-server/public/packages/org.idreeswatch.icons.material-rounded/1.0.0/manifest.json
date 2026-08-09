@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.material-rounded",
+  "name": "Material Rounded",
+  "version": "1.0.0",
+  "author": "Google",
+  "summary": "Google Material Symbols Rounded icon pack.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "Apache-2.0",
+  "min_os_api": 1
+}

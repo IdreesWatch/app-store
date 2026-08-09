@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.lucide-neon",
+  "name": "Lucide",
+  "version": "1.0.0",
+  "author": "Lucide Contributors",
+  "summary": "Lucide outline icons for the app launcher.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "ISC",
+  "min_os_api": 1
+}

@@ -1,9 +1,9 @@
 {
   "id": "org.idreeswatch.python.hello",
-  "name": "Python Hello",
+  "name": "Python Example",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "Reference MicroPython app with native text, progress, and buttons.",
+  "summary": "Small MicroPython example app.",
   "kind": "app",
   "runtime": "micropython",
   "entry": "micropython.v1",

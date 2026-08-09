@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.phosphor-duotone",
+  "name": "Phosphor Duotone",
+  "version": "1.0.0",
+  "author": "Phosphor Icons",
+  "summary": "Phosphor Duotone icon pack.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "MIT",
+  "min_os_api": 1
+}
