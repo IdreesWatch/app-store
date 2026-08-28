@@ -291,9 +291,9 @@ extern "C" int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
     frame->video_ready = false;
     cpu->clockFrame();
 
-    /* FRAMESKIP deliberately renders alternate PPU frames.  Do not publish
-     * an unrendered module buffer as a new frame; the host will retain the
-     * previous canvas and request the next render without disturbing timing. */
+    /* Only publish a frame after the PPU has delivered scanlines.  This also
+     * keeps optional frame-skip builds from presenting a partially rendered
+     * buffer while preserving the core's emulation timing. */
     frame->video_ready = draw_requested && frame_rendered;
     frame->frame_duration_us = NES_FRAME_DURATION_US;
     size_t count = audio_count;
