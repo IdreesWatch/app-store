@@ -266,7 +266,7 @@ extern "C" int32_t nes_start(const idreeswatch_host_v1_t *host,
     reset_metrics(module_host->time_us
                       ? module_host->time_us(module_host->context) : 0);
     module_log(IDREESWATCH_LOG_INFO,
-               "Anemoia NES core ready (60Hz emulation, 30Hz render)");
+               "Anemoia NES core ready (60Hz timing, adaptive PPU render)");
     return 0;
 }
 
@@ -289,11 +289,11 @@ extern "C" int32_t nes_run_frame(const idreeswatch_input_v1_t *input,
     frame_rendered = false;
     audio_count = 0;
     frame->video_ready = false;
+    cpu->bus.ppu.setDrawCallback(draw_requested ? draw_scanlines : nullptr);
     cpu->clockFrame();
 
-    /* Only publish a frame after the PPU has delivered scanlines.  This also
-     * keeps optional frame-skip builds from presenting a partially rendered
-     * buffer while preserving the core's emulation timing. */
+    /* Do not publish a skipped PPU frame. The host retains the previous
+     * canvas and requests another render without disturbing NES timing. */
     frame->video_ready = draw_requested && frame_rendered;
     frame->frame_duration_us = NES_FRAME_DURATION_US;
     size_t count = audio_count;

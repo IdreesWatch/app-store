@@ -1,7 +1,7 @@
 {
   "id": "org.idreeswatch.nes",
   "name": "NES",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "IdreesWatch",
   "summary": "High-performance Anemoia NES emulator with touch controls and PCM audio.",
   "kind": "app",

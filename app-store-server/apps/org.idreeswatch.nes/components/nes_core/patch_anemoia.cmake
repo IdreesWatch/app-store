@@ -1,0 +1,98 @@
+set(ANEMOIA_PPU_HEADER "${ANEMOIA_SOURCE_DIR}/src/core/ppu2C02.h")
+set(ANEMOIA_PPU_SOURCE "${ANEMOIA_SOURCE_DIR}/src/core/ppu2C02.cpp")
+set(ANEMOIA_CPU_SOURCE "${ANEMOIA_SOURCE_DIR}/src/core/cpu6502.cpp")
+
+# Remove fields from earlier local patch revisions so this stays idempotent.
+file(READ "${ANEMOIA_PPU_HEADER}" ANEMOIA_PPU_HEADER_TEXT)
+string(REPLACE
+    "\n    void setRenderFrame(bool enabled) { render_frame = enabled; }"
+    ""
+    ANEMOIA_PPU_HEADER_TEXT
+    "${ANEMOIA_PPU_HEADER_TEXT}"
+)
+string(REPLACE
+    "\n    bool render_frame = true;"
+    ""
+    ANEMOIA_PPU_HEADER_TEXT
+    "${ANEMOIA_PPU_HEADER_TEXT}"
+)
+file(WRITE "${ANEMOIA_PPU_HEADER}" "${ANEMOIA_PPU_HEADER_TEXT}")
+
+file(READ "${ANEMOIA_PPU_SOURCE}" ANEMOIA_PPU_SOURCE_TEXT)
+string(REPLACE
+    "extern \"C\" bool idreeswatch_nes_render_frame;\n"
+    ""
+    ANEMOIA_PPU_SOURCE_TEXT
+    "${ANEMOIA_PPU_SOURCE_TEXT}"
+)
+
+set(ANEMOIA_RENDER_BEGIN_IRAM
+    "IRAM_ATTR void Ppu2C02::renderScanline(uint16_t current_scanline)\n{")
+set(ANEMOIA_RENDER_BEGIN_TEXT
+    "void Ppu2C02::renderScanline(uint16_t current_scanline)\n{")
+set(ANEMOIA_RENDER_END
+    "\n}\n\ninline void Ppu2C02::transferScroll()")
+
+string(FIND "${ANEMOIA_PPU_SOURCE_TEXT}"
+    "${ANEMOIA_RENDER_BEGIN_IRAM}" ANEMOIA_RENDER_BEGIN_OFFSET)
+if(ANEMOIA_RENDER_BEGIN_OFFSET LESS 0)
+    string(FIND "${ANEMOIA_PPU_SOURCE_TEXT}"
+        "${ANEMOIA_RENDER_BEGIN_TEXT}" ANEMOIA_RENDER_BEGIN_OFFSET)
+endif()
+string(FIND "${ANEMOIA_PPU_SOURCE_TEXT}"
+    "${ANEMOIA_RENDER_END}" ANEMOIA_RENDER_END_OFFSET)
+if(ANEMOIA_RENDER_BEGIN_OFFSET LESS 0 OR ANEMOIA_RENDER_END_OFFSET LESS 0)
+    message(FATAL_ERROR "Pinned Anemoia renderScanline implementation changed")
+endif()
+
+string(LENGTH "${ANEMOIA_RENDER_END}" ANEMOIA_RENDER_END_LENGTH)
+math(EXPR ANEMOIA_RENDER_SUFFIX_OFFSET
+    "${ANEMOIA_RENDER_END_OFFSET} + ${ANEMOIA_RENDER_END_LENGTH}")
+string(SUBSTRING "${ANEMOIA_PPU_SOURCE_TEXT}" 0
+    ${ANEMOIA_RENDER_BEGIN_OFFSET} ANEMOIA_PPU_PREFIX)
+string(SUBSTRING "${ANEMOIA_PPU_SOURCE_TEXT}"
+    ${ANEMOIA_RENDER_SUFFIX_OFFSET} -1 ANEMOIA_PPU_SUFFIX)
+
+set(ANEMOIA_RENDER_REPLACEMENT
+[=[IRAM_ATTR void Ppu2C02::renderScanline(uint16_t current_scanline)
+{
+    scanline = current_scanline;
+    if (!draw_callback)
+    {
+        // Keep mapper scanline timing and approximate sprite-zero timing while
+        // omitting pixel generation for a frame the host cannot display.
+        if (mask.render_background || mask.render_sprite) cart->ppuScanline();
+        if (mask.render_sprite && !status.sprite_zero_hit)
+        {
+            const uint8_t sprite_y = sprite[0].y + 1;
+            const uint8_t sprite_size = control.sprite_size ? 16 : 8;
+            if (sprite_y != 0 && sprite_y < 240 && sprite_y <= scanline &&
+                sprite_y > (scanline - sprite_size))
+                status.sprite_zero_hit = true;
+        }
+        return;
+    }
+    transferScroll();
+    renderBackground();
+    renderSprites();
+    incrementY();
+    finishScanline();
+}
+
+inline void Ppu2C02::transferScroll()]=])
+
+file(WRITE "${ANEMOIA_PPU_SOURCE}"
+    "${ANEMOIA_PPU_PREFIX}${ANEMOIA_RENDER_REPLACEMENT}${ANEMOIA_PPU_SUFFIX}")
+
+# Restore the upstream CPU entry attribute if an earlier configure removed it.
+file(READ "${ANEMOIA_CPU_SOURCE}" ANEMOIA_CPU_SOURCE_TEXT)
+if(NOT ANEMOIA_CPU_SOURCE_TEXT MATCHES
+   "IRAM_ATTR void Cpu6502::clockFrame\\(\\)")
+    string(REPLACE
+        "void Cpu6502::clockFrame()"
+        "IRAM_ATTR void Cpu6502::clockFrame()"
+        ANEMOIA_CPU_SOURCE_TEXT
+        "${ANEMOIA_CPU_SOURCE_TEXT}"
+    )
+    file(WRITE "${ANEMOIA_CPU_SOURCE}" "${ANEMOIA_CPU_SOURCE_TEXT}")
+endif()

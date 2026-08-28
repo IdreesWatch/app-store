@@ -47,6 +47,12 @@ foreach(ANEMOIA_FILE IN LISTS ANEMOIA_FILES)
     endif()
 endforeach()
 
+# The upstream core always rasterizes every PPU frame. Portable apps can have
+# a completed frame waiting for LVGL, so doing that work again only slows the
+# emulated clock. Patch the pinned source to retain CPU/PPU timing and mapper
+# scanline callbacks while allowing unwanted pixel output to be skipped.
+include("${CMAKE_CURRENT_LIST_DIR}/patch_anemoia.cmake")
+
 set(ANEMOIA_CORE_DIR "${ANEMOIA_SOURCE_DIR}/src/core")
 set(ANEMOIA_SOURCES)
 foreach(ANEMOIA_FILE IN LISTS ANEMOIA_FILES)
@@ -64,6 +70,13 @@ idf_component_register(
         "${ANEMOIA_SOURCE_DIR}/src"
         "${ANEMOIA_CORE_DIR}"
     REQUIRES driver esp_partition
+)
+
+# Keep the patched PPU dispatch compact; this avoids a fragile Xtensa BFD
+# relocation sequence in downloadable shared objects.
+set_source_files_properties(
+    "${ANEMOIA_SOURCE_DIR}/src/core/ppu2C02.cpp"
+    PROPERTIES COMPILE_OPTIONS "-O2;-fno-inline-functions"
 )
 
 # Keep the core's complete timing path enabled. The host-side scheduler and
