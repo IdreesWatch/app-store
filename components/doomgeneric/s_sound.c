@@ -587,6 +587,16 @@ void S_ChangeMusic(int musicnum, int looping)
     char namebuf[9];
     void *handle;
 
+    /* The downloadable watch module deliberately starts with -nosound.  The
+     * vanilla game still calls S_StartMusic during title/level setup, so do
+     * not touch the WAD music table when the backend is disabled.  Apart from
+     * wasting work, looking up d_introa here makes shareware DOOM1.WAD abort
+     * before the first frame on builds that do not ship the OPL-only lump. */
+    if (M_CheckParm("-nosound") > 0 || M_CheckParm("-nomusic") > 0)
+    {
+        return;
+    }
+
     // The Doom IWAD file has two versions of the intro music: d_intro
     // and d_introa.  The latter is used for OPL playback.
 
@@ -615,8 +625,23 @@ void S_ChangeMusic(int musicnum, int looping)
 
     if (!music->lumpnum)
     {
+        int lumpnum;
         M_snprintf(namebuf, sizeof(namebuf), "d_%s", DEH_String(music->name));
-        music->lumpnum = W_GetNumForName(namebuf);
+        lumpnum = W_CheckNumForName(namebuf);
+        /* Some legal shareware WAD revisions omit the OPL-specific intro
+         * track.  The regular intro is equivalent for the non-OPL backend. */
+        if (lumpnum < 0 && musicnum == mus_introa)
+        {
+            M_snprintf(namebuf, sizeof(namebuf), "d_intro");
+            lumpnum = W_CheckNumForName(namebuf);
+        }
+        if (lumpnum < 0)
+        {
+            /* Missing optional music must not make an otherwise valid WAD
+             * unusable.  The next level can try its own track normally. */
+            return;
+        }
+        music->lumpnum = lumpnum;
     }
 
     music->data = W_CacheLumpNum(music->lumpnum, PU_STATIC);

@@ -66,7 +66,13 @@ idf_component_register(
     REQUIRES driver esp_partition
 )
 
-target_compile_definitions(${COMPONENT_LIB} PRIVATE OPTIMIZATION_FLAGS=1)
+# The watch panel cannot present a full 256x224 frame at the source core's
+# 60 Hz SPI cadence. Anemoia's FRAMESKIP keeps CPU/APU timing at 60 Hz but
+# renders every other PPU frame, giving the host a stable 30 Hz stream.
+target_compile_definitions(${COMPONENT_LIB} PRIVATE
+    OPTIMIZATION_FLAGS=1
+    FRAMESKIP=1
+)
 
 target_compile_options(${COMPONENT_LIB} PRIVATE
     -Ofast
