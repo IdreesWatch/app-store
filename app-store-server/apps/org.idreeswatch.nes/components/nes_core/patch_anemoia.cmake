@@ -59,17 +59,9 @@ set(ANEMOIA_RENDER_REPLACEMENT
     scanline = current_scanline;
     if (!draw_callback)
     {
-        // Keep mapper scanline timing and approximate sprite-zero timing while
-        // omitting pixel generation for a frame the host cannot display.
-        if (mask.render_background || mask.render_sprite) cart->ppuScanline();
-        if (mask.render_sprite && !status.sprite_zero_hit)
-        {
-            const uint8_t sprite_y = sprite[0].y + 1;
-            const uint8_t sprite_size = control.sprite_size ? 16 : 8;
-            if (sprite_y != 0 && sprite_y < 240 && sprite_y <= scanline &&
-                sprite_y > (scanline - sprite_size))
-                status.sprite_zero_hit = true;
-        }
+        // Use the core's own frameskip path so mapper IRQ and sprite-zero
+        // timing remain compatible while pixel generation is omitted.
+        fakeSpriteHit(current_scanline);
         return;
     }
     transferScroll();
