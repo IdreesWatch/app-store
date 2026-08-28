@@ -1,8 +1,8 @@
-Nofrendo core
+Anemoia-ESP32 core
 
-Source: https://github.com/ducalex/retro-go
-Commit: 4ced120669750ca7228fd0414211430c1d923166
-License: GPL-2.0-only
+Source: https://github.com/Shim06/Anemoia-ESP32
+Commit: d5ca83fd19041247b05d4991e9d8fc6629078332
+License: GPL-3.0-only
 
-The vendored source retains its COPYING, CREDITS, and copyright notices.
-No ROM, BIOS, artwork, trademark, or game content is included.
+The source is fetched at its pinned revision during the app-store build. No
+ROM, BIOS, artwork, trademark, or game content is included.

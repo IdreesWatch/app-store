@@ -1,0 +1,6 @@
+DOOM Generic / Chocolate Doom derived engine
+Source: components/doomgeneric in this repository
+License: GPL-2.0-or-later
+
+No copyrighted WAD game data is bundled with this package. Users must supply
+their own legally obtained .wad file.

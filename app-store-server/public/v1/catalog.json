@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-09T04:33:59.317Z",
+  "generated_at": "2026-08-28T07:58:41.614Z",
   "packages": [
     {
       "id": "org.idreeswatch.peanutgb",
@@ -21,17 +21,17 @@
     {
       "id": "org.idreeswatch.doom",
       "name": "DOOM",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "IdreesWatch",
-      "summary": "DOOM runtime. Supply your own legally obtained WAD on SD.",
+      "summary": "Downloadable native DOOM engine. Supply your own legally obtained WAD.",
       "kind": "app",
-      "runtime": "native-host",
-      "entry": "host.doom",
+      "runtime": "elf",
+      "entry": "idreeswatch_module",
       "icon": "doom",
-      "min_os_api": 1,
-      "size_bytes": 232,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/1.0.0/package.json",
-      "sha256": "b2383b0316a2f9c423aca4787b5ba3c246e5f35da58386d0ef53b112a0d6ee64",
+      "min_os_api": 2,
+      "size_bytes": 380368,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/2.0.0/package.iwpkg",
+      "sha256": "7faa6da38be44a9b7326ec1ab874e4611c1f63ff14bbda6aa6a07b1d52a00c89",
       "availability": "available"
     },
     {
@@ -51,17 +51,17 @@
     {
       "id": "org.idreeswatch.nes",
       "name": "NES",
-      "version": "1.1.0",
+      "version": "2.0.0",
       "author": "IdreesWatch",
-      "summary": "Downloadable NES emulator with touch controls and PCM audio.",
+      "summary": "High-performance Anemoia NES emulator with touch controls and PCM audio.",
       "kind": "app",
       "runtime": "elf",
       "entry": "idreeswatch_module",
       "icon": "gamepad",
       "min_os_api": 2,
-      "size_bytes": 127484,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.nes/1.1.0/package.iwpkg",
-      "sha256": "b77829b1f72f085d2cededafa85bf7482c514018c78160b88574e8ef84cd7724",
+      "size_bytes": 37652,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.nes/2.0.0/package.iwpkg",
+      "sha256": "e96dc53ba17151238daac6ed2fc57f01c1637518c1b8b157bd0b14d1a017a9c8",
       "availability": "available"
     },
     {

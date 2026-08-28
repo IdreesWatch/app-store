@@ -3,14 +3,14 @@
  *
  * project_so links main sources directly, so the default-visible descriptor
  * is a shared-object GC root. Its function references pull the optimized
- * Nofrendo implementation from libnes_core.a.
+ * Anemoia implementation from libnes_core.a.
  */
 
 #include "../../../../sdk/include/idreeswatch_module.h"
 
 #define NES_OUTPUT_WIDTH 256U
 #define NES_OUTPUT_HEIGHT 224U
-#define NES_AUDIO_RATE 24000U
+#define NES_AUDIO_RATE 44100U
 
 int32_t nes_start(const idreeswatch_host_v1_t *host,
                   const idreeswatch_launch_v1_t *launch);

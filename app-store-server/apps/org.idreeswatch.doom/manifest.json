@@ -1,0 +1,19 @@
+{
+  "id": "org.idreeswatch.doom",
+  "name": "DOOM",
+  "version": "2.0.0",
+  "author": "IdreesWatch",
+  "summary": "Downloadable native DOOM engine. Supply your own legally obtained WAD.",
+  "kind": "app",
+  "runtime": "elf",
+  "entry": "idreeswatch_module",
+  "icon": "doom",
+  "artifact": "idreeswatch_doom.so",
+  "min_os_api": 2,
+  "license": "GPL-2.0-or-later",
+  "content": {
+    "extensions": [".wad"],
+    "directory": "IdreesWatch/library/doom/wads",
+    "bundled": false
+  }
+}

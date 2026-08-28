@@ -25,6 +25,9 @@ extern "C" {
 #define IDREESWATCH_MODULE_CAP_AUDIO_PCM16   (1U << 1)
 #define IDREESWATCH_MODULE_CAP_GAMEPAD       (1U << 2)
 #define IDREESWATCH_MODULE_CAP_CONTENT_REQUIRED (1U << 3)
+/* The module opens content_name itself from SD instead of receiving a full
+ * RAM copy. Use this for large, seekable assets such as DOOM WAD files. */
+#define IDREESWATCH_MODULE_CAP_CONTENT_FILE  (1U << 4)
 
 typedef enum {
     IDREESWATCH_LOG_ERROR = 0,
