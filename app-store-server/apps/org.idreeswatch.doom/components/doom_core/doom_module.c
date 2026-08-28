@@ -42,6 +42,12 @@ static uint32_t previous_buttons;
 static bool started;
 static char wad_path[256];
 static char config_path[256];
+/* doomgeneric keeps myargv for the entire game lifetime.  Do not pass a
+ * stack-local argv array: portable_task() reuses that stack on the first
+ * frame, which turns later M_CheckParm() calls into null strcasecmp inputs. */
+static char *doom_arguments[] = {
+    "doom", "-iwad", wad_path, "-config", config_path, "-nosound", NULL
+};
 
 void doom_module_stop(void);
 
@@ -202,10 +208,9 @@ int32_t doom_module_start(const idreeswatch_host_v1_t *host,
         return -2;
     }
 
-    char *arguments[] = {
-        "doom", "-iwad", wad_path, "-config", config_path, "-nosound", NULL
-    };
-    doomgeneric_Create(6, arguments);
+    doomgeneric_Create((int)(sizeof(doom_arguments) /
+                             sizeof(doom_arguments[0])) - 1,
+                       doom_arguments);
     if (!DG_ScreenBuffer) {
         doom_module_stop();
         return -3;

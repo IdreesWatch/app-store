@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-28T08:47:43.511Z",
+  "generated_at": "2026-08-28T09:26:28.942Z",
   "packages": [
     {
       "id": "org.idreeswatch.peanutgb",
@@ -21,7 +21,7 @@
     {
       "id": "org.idreeswatch.doom",
       "name": "DOOM",
-      "version": "2.0.0",
+      "version": "2.0.2",
       "author": "IdreesWatch",
       "summary": "Downloadable native DOOM engine. Supply your own legally obtained WAD.",
       "kind": "app",
@@ -30,8 +30,8 @@
       "icon": "doom",
       "min_os_api": 2,
       "size_bytes": 380368,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/2.0.0/package.iwpkg",
-      "sha256": "7faa6da38be44a9b7326ec1ab874e4611c1f63ff14bbda6aa6a07b1d52a00c89",
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/2.0.2/package.iwpkg",
+      "sha256": "5b05a0ad9a269cca39133f5a8aad700c333b1a32dfccbf4e266de9d8e2546f97",
       "availability": "available"
     },
     {
