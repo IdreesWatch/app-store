@@ -28,6 +28,8 @@ extern "C" {
 /* The module opens content_name itself from SD instead of receiving a full
  * RAM copy. Use this for large, seekable assets such as DOOM WAD files. */
 #define IDREESWATCH_MODULE_CAP_CONTENT_FILE  (1U << 4)
+#define IDREESWATCH_MODULE_CAP_KEYBOARD      (1U << 5)
+#define IDREESWATCH_MODULE_CAP_POINTER       (1U << 6)
 
 typedef enum {
     IDREESWATCH_LOG_ERROR = 0,
@@ -79,6 +81,16 @@ typedef struct {
     uint32_t struct_size;
     uint32_t buttons;
     uint64_t frame_number;
+    /* Optional append-only keyboard and relative-pointer event. A key
+     * sequence of zero means no event for this frame. Pointer buttons use
+     * bit 0 for left, bit 1 for right, and bit 2 for middle. */
+    uint16_t key_code;
+    bool key_pressed;
+    uint8_t pointer_buttons;
+    uint32_t key_sequence;
+    int16_t pointer_dx;
+    int16_t pointer_dy;
+    int16_t pointer_wheel;
 } idreeswatch_input_v1_t;
 
 typedef struct {

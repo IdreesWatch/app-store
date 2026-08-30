@@ -1,0 +1,8 @@
+Tiny386
+Repository: https://github.com/hchunhui/tiny386
+Pinned commit: 239bf87b842e75ffc342af7bdafc814b87f63284
+License: BSD-3-Clause
+
+The emulator also contains peripheral implementations derived from TinyEMU
+and QEMU under permissive licenses. No BIOS, operating system, or disk image
+is distributed with this package.

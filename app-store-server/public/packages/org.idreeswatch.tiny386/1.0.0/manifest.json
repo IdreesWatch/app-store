@@ -1,0 +1,19 @@
+{
+  "id": "org.idreeswatch.tiny386",
+  "name": "tiny386",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "Touch-friendly 386 PC with an on-screen keyboard and mouse.",
+  "kind": "app",
+  "runtime": "elf",
+  "entry": "idreeswatch_module",
+  "icon": "gamepad",
+  "artifact": "idreeswatch_tiny386.so",
+  "min_os_api": 3,
+  "license": "BSD-3-Clause",
+  "content": {
+    "extensions": [".ini"],
+    "directory": "IdreesWatch/Tiny386",
+    "bundled": false
+  }
+}

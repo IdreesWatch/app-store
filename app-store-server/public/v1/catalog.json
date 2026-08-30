@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-28T09:26:28.942Z",
+  "generated_at": "2026-08-30T11:05:34.138Z",
   "packages": [
     {
       "id": "org.idreeswatch.peanutgb",
@@ -21,7 +21,7 @@
     {
       "id": "org.idreeswatch.doom",
       "name": "DOOM",
-      "version": "2.0.2",
+      "version": "2.1.0",
       "author": "IdreesWatch",
       "summary": "Downloadable native DOOM engine. Supply your own legally obtained WAD.",
       "kind": "app",
@@ -29,29 +29,31 @@
       "entry": "idreeswatch_module",
       "icon": "doom",
       "min_os_api": 2,
-      "size_bytes": 380368,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/2.0.2/package.iwpkg",
-      "sha256": "5b05a0ad9a269cca39133f5a8aad700c333b1a32dfccbf4e266de9d8e2546f97",
+      "size_bytes": 380376,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.doom/2.1.0/package.iwpkg",
+      "sha256": "9c9701a71446097899525d16f3d3a2947d91f3057d2e204f7a85605eb11b6088",
       "availability": "available"
     },
     {
       "id": "org.idreeswatch.tiny386",
       "name": "tiny386",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": "IdreesWatch",
-      "summary": "Experimental 386-class PC emulator runtime.",
+      "summary": "Touch-friendly 386 PC with an on-screen keyboard and mouse.",
       "kind": "app",
-      "runtime": "native-host",
-      "entry": "host.tiny386",
+      "runtime": "elf",
+      "entry": "idreeswatch_module",
       "icon": "gamepad",
-      "min_os_api": 1,
-      "size_bytes": 0,
-      "availability": "runtime-pending"
+      "min_os_api": 3,
+      "size_bytes": 183220,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.tiny386/1.0.0/package.iwpkg",
+      "sha256": "52407dc941fa4e941966f5f10f6c329a430518d84556ba4b8de83bbab23ae326",
+      "availability": "available"
     },
     {
       "id": "org.idreeswatch.nes",
       "name": "NES",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "IdreesWatch",
       "summary": "High-performance Anemoia NES emulator with touch controls and PCM audio.",
       "kind": "app",
@@ -60,8 +62,8 @@
       "icon": "gamepad",
       "min_os_api": 2,
       "size_bytes": 37652,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.nes/2.0.0/package.iwpkg",
-      "sha256": "e96dc53ba17151238daac6ed2fc57f01c1637518c1b8b157bd0b14d1a017a9c8",
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.nes/2.1.0/package.iwpkg",
+      "sha256": "fae0b606042b828cc8e0282bec4b79fa256df760c71d30e3e77a1f18645ebf26",
       "availability": "available"
     },
     {

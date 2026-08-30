@@ -46,7 +46,8 @@ static char config_path[256];
  * stack-local argv array: portable_task() reuses that stack on the first
  * frame, which turns later M_CheckParm() calls into null strcasecmp inputs. */
 static char *doom_arguments[] = {
-    "doom", "-iwad", wad_path, "-config", config_path, "-nosound", NULL
+    "doom", "-iwad", wad_path, "-config", config_path,
+    "-gfxmode", "rgb565", "-nosound", NULL
 };
 
 void doom_module_stop(void);
@@ -152,16 +153,12 @@ void DG_DrawFrame(void)
         !current_frame->pixels || !DG_ScreenBuffer) {
         return;
     }
-    const uint32_t *source = (const uint32_t *)DG_ScreenBuffer;
+    const uint16_t *source = (const uint16_t *)DG_ScreenBuffer;
     uint16_t *destination = current_frame->pixels;
     for (unsigned int y = 0; y < DOOM_HEIGHT; ++y) {
         uint16_t *row = destination + (size_t)y * current_frame->stride_pixels;
-        for (unsigned int x = 0; x < DOOM_WIDTH; ++x) {
-            uint32_t pixel = source[(size_t)y * DOOM_WIDTH + x];
-            row[x] = (uint16_t)(((pixel & 0x00f80000U) >> 8) |
-                                ((pixel & 0x0000fc00U) >> 5) |
-                                ((pixel & 0x000000f8U) >> 3));
-        }
+        memcpy(row, source + (size_t)y * DOOM_WIDTH,
+               DOOM_WIDTH * sizeof(uint16_t));
     }
     current_frame->video_ready = true;
 }
