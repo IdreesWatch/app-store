@@ -11,7 +11,13 @@ if (!artifactsArgument) {
 const root = fileURLToPath(new URL("..", import.meta.url));
 const publisher = join(root, "scripts", "publish-built-app.mjs");
 const artifactsRoot = resolve(artifactsArgument);
-for (const sourceRootName of ["apps", "themes", "watchfaces"]) {
+for (const sourceRootName of [
+  "apps",
+  "themes",
+  "watchfaces",
+  "wallpapers",
+  "icon-packs",
+]) {
   const sourceRoot = join(root, sourceRootName);
   let directories;
   try {

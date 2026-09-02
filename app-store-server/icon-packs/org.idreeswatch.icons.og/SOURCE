@@ -1,0 +1,7 @@
+The OG Icons pack restores the full-colour launcher assets from IdreesWatchOS
+commit 2d1fb35. The reproducible extraction and downscale is implemented by
+app-store-server/scripts/build-og-icons.ps1.
+
+The DOOM and tiny386 entries use the online assets and provenance recorded in
+components/assets/source/online/SOURCE. DOOM and Windows are trademarks of
+their respective owners; this package is not endorsed by either owner.

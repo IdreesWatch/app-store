@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-30T11:05:34.138Z",
+  "generated_at": "2026-09-01T23:53:41.169Z",
   "packages": [
     {
       "id": "org.idreeswatch.peanutgb",
@@ -43,7 +43,7 @@
       "kind": "app",
       "runtime": "elf",
       "entry": "idreeswatch_module",
-      "icon": "gamepad",
+      "icon": "tiny386",
       "min_os_api": 3,
       "size_bytes": 183220,
       "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.tiny386/1.0.0/package.iwpkg",
@@ -100,17 +100,17 @@
     },
     {
       "id": "org.idreeswatch.python.hello",
-      "name": "Python Example",
-      "version": "1.0.0",
+      "name": "MicroPython",
+      "version": "1.1.0",
       "author": "IdreesWatch",
-      "summary": "Small MicroPython example app.",
+      "summary": "Run a touch-friendly Python app directly on the watch.",
       "kind": "app",
       "runtime": "micropython",
       "entry": "micropython.v1",
       "icon": "assistant",
       "min_os_api": 1,
       "size_bytes": 283,
-      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.python.hello/1.0.0/package.iwpkg",
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.python.hello/1.1.0/package.iwpkg",
       "sha256": "5bb91b2e812a4b62bf85073ab1a6e94e7c43f7b72aa8cb65ed670486fd401b14",
       "availability": "available"
     },
@@ -176,6 +176,22 @@
       "size_bytes": 134866,
       "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.icons.lucide-neon/1.0.0/package.iwpkg",
       "sha256": "8ad65e5dd2debac61563dc884f04663d263310d364bce728b0ca9a7420f5f7af",
+      "availability": "available"
+    },
+    {
+      "id": "org.idreeswatch.icons.og",
+      "name": "OG Icons",
+      "version": "1.0.0",
+      "author": "IdreesWatch",
+      "summary": "The original full-colour IdreesWatch launcher artwork.",
+      "kind": "icon-pack",
+      "runtime": "content",
+      "entry": "icon-pack.v1",
+      "icon": "settings",
+      "min_os_api": 1,
+      "size_bytes": 165977,
+      "package_url": "https://idreeswatch.github.io/app-store/packages/org.idreeswatch.icons.og/1.0.0/package.iwpkg",
+      "sha256": "dfcaecc1c8119e6b73e85723a16da5cabba2b7844a39d47a7002440d3517989f",
       "availability": "available"
     }
   ]

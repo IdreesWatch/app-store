@@ -1,0 +1,14 @@
+{
+  "id": "org.idreeswatch.icons.og",
+  "name": "OG Icons",
+  "version": "1.0.0",
+  "author": "IdreesWatch",
+  "summary": "The original full-colour IdreesWatch launcher artwork.",
+  "kind": "icon-pack",
+  "runtime": "content",
+  "entry": "icon-pack.v1",
+  "artifact": "icons.json",
+  "icon": "settings",
+  "license": "LicenseRef-IdreesWatch-Mixed",
+  "min_os_api": 1
+}

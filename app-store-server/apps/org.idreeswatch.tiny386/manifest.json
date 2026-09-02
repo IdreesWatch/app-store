@@ -7,7 +7,7 @@
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",
-  "icon": "gamepad",
+  "icon": "tiny386",
   "artifact": "idreeswatch_tiny386.so",
   "min_os_api": 3,
   "license": "BSD-3-Clause",
