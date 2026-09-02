@@ -3,7 +3,7 @@
   "name": "Python Example",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "Small MicroPython example app.",
+  "summary": "Run Python scripts on the watch.",
   "kind": "app",
   "runtime": "micropython",
   "entry": "micropython.v1",

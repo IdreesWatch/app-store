@@ -3,7 +3,7 @@
   "name": "NES",
   "version": "2.0.0",
   "author": "IdreesWatch",
-  "summary": "High-performance Anemoia NES emulator with touch controls and PCM audio.",
+  "summary": "Play NES games with touch controls and sound.",
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",

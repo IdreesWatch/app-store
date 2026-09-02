@@ -3,7 +3,7 @@
   "name": "NES",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "Downloadable NES emulator with touch controls and PCM audio.",
+  "summary": "Play NES games with touch controls and sound.",
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",

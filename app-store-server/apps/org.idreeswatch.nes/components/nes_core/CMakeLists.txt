@@ -47,10 +47,10 @@ foreach(ANEMOIA_FILE IN LISTS ANEMOIA_FILES)
     endif()
 endforeach()
 
-# The upstream core always rasterizes every PPU frame. Portable apps can have
+# The upstream core always rasterizes every PPU frame.  Portable apps can have
 # a completed frame waiting for LVGL, so doing that work again only slows the
-# emulated clock. Patch the pinned source to retain CPU/PPU timing and mapper
-# scanline callbacks while allowing unwanted pixel output to be skipped.
+# emulated clock.  Patch the pinned source to retain CPU/PPU timing and sprite
+# zero hit emulation while allowing the adapter to skip unwanted pixel output.
 include("${CMAKE_CURRENT_LIST_DIR}/patch_anemoia.cmake")
 
 set(ANEMOIA_CORE_DIR "${ANEMOIA_SOURCE_DIR}/src/core")
@@ -62,7 +62,7 @@ foreach(ANEMOIA_FILE IN LISTS ANEMOIA_FILES)
 endforeach()
 
 idf_component_register(
-    SRCS "nes_module.cpp" ${ANEMOIA_SOURCES}
+    SRCS "nes_module.cpp" "nes_platform.cpp" ${ANEMOIA_SOURCES}
     INCLUDE_DIRS
         "."
         "compat"
@@ -72,10 +72,18 @@ idf_component_register(
     REQUIRES driver esp_partition
 )
 
-# Keep the patched PPU dispatch compact; this avoids a fragile Xtensa BFD
-# relocation sequence in downloadable shared objects.
+# Keep the patched PPU dispatch and the C++ host adapter compact while leaving
+# the CPU/APU/mapper hot path at -Ofast.
 set_source_files_properties(
     "${ANEMOIA_SOURCE_DIR}/src/core/ppu2C02.cpp"
+    PROPERTIES COMPILE_OPTIONS "-O2;-fno-inline-functions"
+)
+set_source_files_properties(
+    "${CMAKE_CURRENT_LIST_DIR}/nes_module.cpp"
+    PROPERTIES COMPILE_OPTIONS "-O2;-fno-inline-functions;-mno-longcalls"
+)
+set_source_files_properties(
+    "${CMAKE_CURRENT_LIST_DIR}/nes_platform.cpp"
     PROPERTIES COMPILE_OPTIONS "-O2;-fno-inline-functions"
 )
 

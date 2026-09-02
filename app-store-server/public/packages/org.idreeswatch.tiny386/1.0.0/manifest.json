@@ -3,7 +3,7 @@
   "name": "tiny386",
   "version": "1.0.0",
   "author": "IdreesWatch",
-  "summary": "Touch-friendly 386 PC with an on-screen keyboard and mouse.",
+  "summary": "A 386 PC for the watch. Add BIOS files and a disk image.",
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",

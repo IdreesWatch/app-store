@@ -3,7 +3,7 @@
   "name": "DOOM",
   "version": "2.0.0",
   "author": "IdreesWatch",
-  "summary": "Downloadable native DOOM engine. Supply your own legally obtained WAD.",
+  "summary": "Play DOOM on the watch. Add a legally obtained WAD.",
   "kind": "app",
   "runtime": "elf",
   "entry": "idreeswatch_module",

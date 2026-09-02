@@ -62,6 +62,33 @@ static void module_log(idreeswatch_log_level_t level, const char *message)
     }
 }
 
+static char lower_ascii(char value)
+{
+    return value >= 'A' && value <= 'Z' ? (char)(value + ('a' - 'A'))
+                                        : value;
+}
+
+static bool path_starts_with_ci(const char *path, const char *prefix)
+{
+    if (!path || !prefix) return false;
+    while (*prefix) {
+        if (!*path || lower_ascii(*path) != lower_ascii(*prefix)) {
+            return false;
+        }
+        ++path;
+        ++prefix;
+    }
+    return true;
+}
+
+static void log_path_failure(const char *kind, const char *path)
+{
+    char message[192];
+    snprintf(message, sizeof(message), "Tiny386 %s not found: %s",
+             kind ? kind : "file", path ? path : "<empty>");
+    module_log(IDREESWATCH_LOG_ERROR, message);
+}
+
 void *tiny386_malloc(size_t size)
 {
     if (!module_host || !module_host->allocate || size == 0 ||
@@ -224,20 +251,58 @@ static bool resolve_path(const char **field)
         return false;
     }
     const char *value = *field;
+    char normalized[256];
+    size_t value_length = strlen(value);
+    if (value_length == 0 || value_length >= sizeof(normalized)) {
+        return false;
+    }
+    size_t normalized_length = 0;
+    for (size_t i = 0; i < value_length && normalized_length + 1U <
+                         sizeof(normalized); ++i) {
+        char character = value[i];
+        if (character == '\\') character = '/';
+        if ((i == 0 || i + 1U == value_length) && character == '"') {
+            continue;
+        }
+        normalized[normalized_length++] = character;
+    }
+    normalized[normalized_length] = '\0';
+    if (normalized_length == 0) return false;
+    value = normalized;
     char resolved[256];
-    if (strncmp(value, TINY386_ROOT "/", sizeof(TINY386_ROOT)) == 0) {
+    if (path_starts_with_ci(value, TINY386_ROOT "/")) {
         if (strlen(value) >= sizeof(resolved)) return false;
         strcpy(resolved, value);
     } else {
-        if (strncmp(value, "/sdcard/", 8) == 0) {
-            const char *leaf = strrchr(value, '/');
-            value = leaf ? leaf + 1 : value;
+        /* INI files in the wild use all three forms below. Normalize them
+         * before joining with the one allowed Tiny386 directory, otherwise a
+         * valid "IdreesWatch/Tiny386/bios.bin" entry would become
+         * /sdcard/IdreesWatch/Tiny386/IdreesWatch/Tiny386/bios.bin. */
+        if (path_starts_with_ci(value, "/sdcard/")) value += 8;
+        if (path_starts_with_ci(value, TINY386_RELATIVE_ROOT)) {
+            value += strlen(TINY386_RELATIVE_ROOT);
         }
         int written = snprintf(resolved, sizeof(resolved), "%s/%s",
                                TINY386_ROOT, value);
         if (written <= 0 || (size_t)written >= sizeof(resolved)) return false;
     }
-    if (!file_exists(resolved)) return false;
+    if (!file_exists(resolved)) {
+        /* Keep the documented flat-folder layout forgiving when a config
+         * contains an old nested path or a host supplied a different case. */
+        const char *leaf = strrchr(value, '/');
+        if (leaf && leaf[1]) {
+            int written = snprintf(resolved, sizeof(resolved), "%s/%s",
+                                   TINY386_ROOT, leaf + 1);
+            if (written <= 0 || (size_t)written >= sizeof(resolved) ||
+                !file_exists(resolved)) {
+                log_path_failure("file", value);
+                return false;
+            }
+        } else {
+            log_path_failure("file", resolved);
+            return false;
+        }
+    }
     char *replacement = tiny386_strdup(resolved);
     if (!replacement) return false;
     tiny386_free((void *)*field);
@@ -250,11 +315,24 @@ static bool resolve_optional_path(const char **field)
     return !field || !*field || !(*field)[0] || resolve_path(field);
 }
 
+static void set_default_path(const char **field, const char *value)
+{
+    if (!field || !value || (*field && (*field)[0])) return;
+    if (*field) tiny386_free((void *)*field);
+    *field = tiny386_strdup(value);
+}
+
 static bool prepare_configuration(const char *relative_ini)
 {
-    if (!relative_ini || strstr(relative_ini, "..") ||
-        strncmp(relative_ini, TINY386_RELATIVE_ROOT,
-                sizeof(TINY386_RELATIVE_ROOT) - 1U) != 0) {
+    if (!relative_ini || strstr(relative_ini, "..")) {
+        module_log(IDREESWATCH_LOG_ERROR,
+                   "Tiny386 INI path is empty or unsafe");
+        return false;
+    }
+    if (path_starts_with_ci(relative_ini, "/sdcard/")) relative_ini += 8;
+    if (!path_starts_with_ci(relative_ini, TINY386_RELATIVE_ROOT)) {
+        module_log(IDREESWATCH_LOG_ERROR,
+                   "Tiny386 INI must be under IdreesWatch/Tiny386");
         return false;
     }
     int written = snprintf(config_path, sizeof(config_path), "/sdcard/%s",
@@ -268,7 +346,37 @@ static bool prepare_configuration(const char *relative_ini)
     pc_config.height = TINY386_HEIGHT;
     pc_config.cpu_gen = 3;
     pc_config.fpu = 0;
-    if (ini_parse(config_path, parse_conf_ini, &pc_config) != 0) return false;
+    int parse_result = ini_parse(config_path, parse_conf_ini, &pc_config);
+    if (parse_result != 0) {
+        char message[160];
+        snprintf(message, sizeof(message),
+                 "Tiny386 INI parse returned %d; using defaults where needed",
+                 parse_result);
+        module_log(IDREESWATCH_LOG_WARN, message);
+    }
+
+    /* A minimal card setup should work even if the INI only contains display
+     * or CPU options. These names match the example shipped with the app. */
+    set_default_path(&pc_config.bios, "bios.bin");
+    set_default_path(&pc_config.vga_bios, "vgabios.bin");
+    bool has_configured_media = false;
+    for (size_t i = 0; i < 4; ++i) {
+        if (pc_config.disks[i] && pc_config.disks[i][0]) {
+            has_configured_media = true;
+            break;
+        }
+    }
+    if (!has_configured_media) {
+        for (size_t i = 0; i < 2; ++i) {
+            if (pc_config.fdd[i] && pc_config.fdd[i][0]) {
+                has_configured_media = true;
+                break;
+            }
+        }
+    }
+    if (!has_configured_media && file_exists(TINY386_ROOT "/disk.img")) {
+        pc_config.disks[0] = tiny386_strdup("disk.img");
+    }
 
     pc_config.width = TINY386_WIDTH;
     pc_config.height = TINY386_HEIGHT;
@@ -308,14 +416,25 @@ static bool prepare_configuration(const char *relative_ini)
         return false;
     }
     if (pc_config.kernel && pc_config.kernel[0]) has_boot_media = true;
-    if (!has_boot_media) return false;
+    if (!has_boot_media) {
+        module_log(IDREESWATCH_LOG_ERROR,
+                   "Tiny386 has no hda, hdb, hdc, hdd, fda, or fdb image");
+        return false;
+    }
 
     /* Fail before pc_new() if the requested guest memory cannot be provided as
      * one PSRAM-only allocation alongside VGA/device overhead. */
     size_t probe_size = (size_t)pc_config.mem_size +
                         (size_t)pc_config.vga_mem_size + 512U * 1024U;
     void *probe = tiny386_malloc(probe_size);
-    if (!probe) return false;
+    if (!probe) {
+        char message[160];
+        snprintf(message, sizeof(message),
+                 "Tiny386 PSRAM allocation failed (%lu bytes)",
+                 (unsigned long)probe_size);
+        module_log(IDREESWATCH_LOG_ERROR, message);
+        return false;
+    }
     tiny386_free(probe);
     return true;
 }
@@ -381,6 +500,12 @@ int32_t tiny386_module_start(const idreeswatch_host_v1_t *host,
         return -1;
     }
     module_host = host;
+    {
+        char message[192];
+        snprintf(message, sizeof(message), "Tiny386 loading INI: %s",
+                 launch->content_name);
+        module_log(IDREESWATCH_LOG_INFO, message);
+    }
     if (!prepare_configuration(launch->content_name)) {
         module_log(IDREESWATCH_LOG_ERROR,
                    "Tiny386 setup missing INI, BIOS, VGA BIOS, or boot disk");

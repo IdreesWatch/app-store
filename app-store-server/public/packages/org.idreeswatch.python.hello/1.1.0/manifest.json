@@ -3,7 +3,7 @@
   "name": "MicroPython",
   "version": "1.1.0",
   "author": "IdreesWatch",
-  "summary": "Run a touch-friendly Python app directly on the watch.",
+  "summary": "Run Python scripts on the watch.",
   "kind": "app",
   "runtime": "micropython",
   "entry": "micropython.v1",
